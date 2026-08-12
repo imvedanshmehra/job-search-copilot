@@ -14,4 +14,24 @@ The `/spec` directory is the project constitution — read it before making prod
 
 ## Status
 
-Pre-implementation. Following the phases in [spec/roadmap.md](spec/roadmap.md), starting from Phase 0 (monorepo skeleton).
+Phase 0 (monorepo skeleton) complete. Following the phases in [spec/roadmap.md](spec/roadmap.md).
+
+## Local development
+
+Requires Node 22 (see `.nvmrc`) and pnpm.
+
+```sh
+cp .env.example .env
+cp apps/api/.env.example apps/api/.env
+
+pnpm install
+
+# Start Postgres + pgvector (not started automatically by `pnpm dev`)
+docker compose up -d
+
+# Boots web (:3000), api (:3001), and worker together
+pnpm dev
+```
+
+- `apps/web` — http://localhost:3000
+- `apps/api` — http://localhost:3001/health
