@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Enums ---
+
+enum WorkMode {
+  REMOTE
+  ON_SITE
+  HYBRID
+}
+
+enum MatchStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  NO_RESPONSE
+  INTERVIEWING
+  REJECTED
+  OFFER
+  WITHDRAWN
+}
+
+// --- Models ---
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resumes          Resume[]
+  resumeVariants   ResumeVariant[]
+  searchPreference SearchPreference?
+  matches          Match[]
+  applications     Application[]
+}
+
+model Resume {
+  id               String   @id @default(cuid())
+  userId           String
+  storageKey       String
+  originalFilename String
+  mimeType         String
+  fileSizeBytes    Int
+  uploadedAt       DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user     User            @relation(fields: [userId], references: [id])
+  variants ResumeVariant[]
+
+  @@index([userId])
+}
+
+model ResumeVariant {
+  id               String   @id @default(cuid())
+  userId           String
+  resumeId         String
+  label            String
+  storageKey       String
+  originalFilename String
+  mimeType         String
+  fileSizeBytes    Int
+  uploadedAt       DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  resume  Resume  @relation(fields: [resumeId], references: [id])
+  matches Match[]
+
+  @@unique([resumeId, label])
+}
+
+model SearchPreference {
+  id          String     @id @default(cuid())
+  userId      String     @unique
+  workModes   WorkMode[]
+  payMin      Int?
+  payMax      Int?
+  payCurrency String     @default("USD")
+  locations   String[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model JobPosting {
+  id             String    @id @default(cuid())
+  source         String
+  externalId     String
+  title          String
+  company        String
+  location       String?
+  workMode       WorkMode?
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String?
+  url            String
+  description    String    @db.Text
+  postedAt       DateTime?
+  fetchedAt      DateTime
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  matches Match[]
+
+  @@unique([source, externalId])
+}
+
+model Match {
+  id              String      @id @default(cuid())
+  userId          String
+  jobPostingId    String
+  resumeVariantId String
+  score           Float
+  rationale       String      @db.Text
+  status          MatchStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+  jobPosting    JobPosting    @relation(fields: [jobPostingId], references: [id])
+  resumeVariant ResumeVariant @relation(fields: [resumeVariantId], references: [id])
+  application   Application?
+
+  @@unique([userId, jobPostingId])
+  @@index([userId])
+  @@index([status])
+}
+
+model Application {
+  id        String            @id @default(cuid())
+  userId    String
+  matchId   String            @unique
+  status    ApplicationStatus @default(APPLIED)
+  appliedAt DateTime?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  match Match @relation(fields: [matchId], references: [id])
+}
