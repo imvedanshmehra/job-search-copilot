@@ -1,6 +1,6 @@
 # Job Search Co-Pilot
 
-A job search assistant that polls job boards hourly, matches postings against your resume variants (frontend / backend / full-stack) using cheap rules plus an LLM, and puts good matches in a review queue. You approve or reject; approval opens a pre-filled application for you to review and submit yourself.
+A job search assistant that polls job boards hourly for the roles you describe, matches the postings that come back against your resume variants using cheap rules plus an LLM, and puts good matches in a review queue. You approve or reject; approval opens a pre-filled application for you to review and submit yourself.
 
 **The system never submits an application without an explicit human click.** No autopilot toggle, no exceptions.
 

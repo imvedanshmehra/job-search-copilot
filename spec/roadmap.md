@@ -21,19 +21,19 @@ API endpoint + minimal web page to upload a master resume and up to 3 targeted v
 _Done when:_ user can upload 4 files and see them listed in the UI.
 
 **Phase 4 — Search preferences**
-API endpoints + a settings page for the user's filters: work mode (remote/on-site/hybrid), pay range, location(s), and any other prefilter-relevant criteria. Stored in `SearchPreference`, not hardcoded.
-_Done when:_ user can set and save filters in the UI and read them back after a reload.
+API endpoints + a settings page for the user's filters: target roles/keywords (what to search for — e.g. "senior frontend engineer", "staff backend engineer"), work mode (remote/on-site/hybrid), pay range, location(s), and any other prefilter-relevant criteria. Stored in `SearchPreference`, not hardcoded.
+_Done when:_ user can set and save filters, including at least one target role, in the UI and read them back after a reload.
 
 **Phase 5 — First job source adapter**
-One adapter in `packages/sources` (pick the simplest public source, e.g. a Greenhouse job board JSON feed) that fetches and normalizes postings into the `JobPosting` schema. No scheduling yet — runs from a script.
-_Done when:_ running the adapter manually inserts normalized postings into the DB.
+One adapter in `packages/sources` (pick the simplest public source with a queryable API, e.g. a Greenhouse job board search endpoint) that takes the user's target roles as a query, fetches, and normalizes only the matching postings into the `JobPosting` schema. No scheduling yet — runs from a script.
+_Done when:_ running the adapter manually with a target role inserts only role-matching normalized postings into the DB — not the source's full listing.
 
 **Phase 6 — Worker scheduling**
-`node-cron` in `apps/worker` runs the Phase 5 adapter hourly. Dedupes postings already seen.
-_Done when:_ leaving the worker running for a few hours produces new postings without duplicates.
+`node-cron` in `apps/worker` runs the Phase 5 adapter hourly, passing it the user's current target roles from `SearchPreference`. Dedupes postings already seen.
+_Done when:_ leaving the worker running for a few hours produces new, role-matching postings without duplicates.
 
 **Phase 7 — Prefilter rules**
-Cheap rule-based filter in `packages/scoring` that reads the user's `SearchPreference` (Phase 4) plus baseline sanity rules (keywords, seniority) and runs on every new posting before anything touches the LLM.
+Cheap rule-based filter in `packages/scoring` that reads the user's `SearchPreference` (Phase 4) — work mode, pay, location, since role relevance was already applied at fetch time in Phase 5/6 — plus baseline sanity rules (seniority, etc.) and runs on every new posting before anything touches the LLM.
 _Done when:_ a posting that fails the user's own filters (e.g. wrong work mode) is dropped before scoring, and this is visible in a log or flag on the record.
 
 **Phase 8 — LLM scoring**
