@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "express": "^4.21.2",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "@job-search-copilot/core": "workspace:*",
+    "@job-search-copilot/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

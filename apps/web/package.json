@@ -13,7 +13,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "@job-search-copilot/core": "workspace:*",
+    "@job-search-copilot/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -32,6 +32,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@job-search-copilot/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@job-search-copilot/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       express:
         specifier: ^4.21.2
         version: 4.22.2
@@ -57,6 +63,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@job-search-copilot/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@job-search-copilot/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -114,12 +126,20 @@ importers:
         version: 5.9.3
 
   packages/contracts:
+    dependencies:
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
     devDependencies:
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
 
   packages/core:
+    dependencies:
+      '@job-search-copilot/contracts':
+        specifier: workspace:*
+        version: link:../contracts
     devDependencies:
       typescript:
         specifier: ^5.7.2
@@ -1897,6 +1917,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
@@ -3557,3 +3580,5 @@ snapshots:
   xtend@4.0.2: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.25.76: {}
