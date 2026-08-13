@@ -23,11 +23,16 @@ Requires Node 22 (see `.nvmrc`) and pnpm.
 ```sh
 cp .env.example .env
 cp apps/api/.env.example apps/api/.env
+cp packages/db/.env.example packages/db/.env
 
 pnpm install
 
-# Start Postgres + pgvector (not started automatically by `pnpm dev`)
+# Start Postgres + pgvector and MinIO (not started automatically by `pnpm dev`)
 docker compose up -d
+
+# Apply migrations, then seed the one MVP user row
+pnpm --filter @job-search-copilot/db exec prisma migrate deploy
+pnpm db:seed
 
 # Boots web (:3000), api (:3001), and worker together
 pnpm dev
@@ -35,3 +40,4 @@ pnpm dev
 
 - `apps/web` — http://localhost:3000
 - `apps/api` — http://localhost:3001/health
+- MinIO console — http://localhost:9001 (API on :9000)

@@ -10,7 +10,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "format": "node scripts/format.mjs"
+    "format": "node scripts/format.mjs",
+    "db:seed": "pnpm --filter @job-search-copilot/db run db:seed"
   },
   "devDependencies": {
     "turbo": "^2.3.3",
